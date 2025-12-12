@@ -44,7 +44,7 @@ class ApiClient {
     // Ensure date is string if passed as Date object
     const payload = {
         ...data,
-        dateOfBirth: (data.dateOfBirth as any) instanceof Date ? (data.dateOfBirth as Date).toISOString() : data.dateOfBirth
+        dateOfBirth: (data.dateOfBirth as unknown) instanceof Date ? (data.dateOfBirth as Date).toISOString() : data.dateOfBirth
     };
     const res = await this.client.post('/auth/register/patient', payload);
     return res.data;
