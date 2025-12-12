@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"; // Removed 'React'
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
@@ -18,7 +18,10 @@ interface NavBarProps {
   className?: string;
 }
 
-export function FloatingNavBar({ items, activeTab, onTabChange, className }: NavBarProps) 
+export function FloatingNavBar({ items, activeTab, onTabChange, className }: NavBarProps) {
+  // REMOVED: const [isMobile, setIsMobile] = useState(false);
+
+  // REMOVED: useEffect hook that calculated isMobile
 
   return (
     <div
