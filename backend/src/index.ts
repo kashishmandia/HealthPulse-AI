@@ -17,6 +17,9 @@ import providerRoutes from './routes/provider.js';
 const app = express();
 const server = createServer(app);
 
+// Environment variable for CORS (used in two places)
+const allowedOrigin = process.env.FRONTEND_URL;
+
 // Security and performance middleware
 app.use(helmet());
 app.use(compression());
@@ -24,7 +27,7 @@ app.use(compression());
 // CORS configuration (Express App)
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: allowedOrigin, // Using constant here
     credentials: true,
   })
 );
@@ -57,8 +60,7 @@ app.use(errorHandler);
 // WebSocket setup
 const io = new SocketIOServer(server, {
   cors: {
-    // FIX APPLIED HERE: Using process.env.FRONTEND_URL instead of config.FRONTEND_URL
-    origin: process.env.FRONTEND_URL,
+    origin: allowedOrigin, // Using constant here
     methods: ['GET', 'POST'],
     credentials: true,
   },
