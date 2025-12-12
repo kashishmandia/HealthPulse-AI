@@ -21,18 +21,18 @@ const server = createServer(app);
 app.use(helmet());
 app.use(compression());
 
-// CORS configuration
+// CORS configuration (Express App)
 app.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-  })
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
 );
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 
@@ -42,7 +42,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date() });
+  res.json({ status: 'ok', timestamp: new Date() });
 });
 
 // API Routes
@@ -56,11 +56,12 @@ app.use(errorHandler);
 
 // WebSocket setup
 const io = new SocketIOServer(server, {
-  cors: {
-    origin: config.FRONTEND_URL,
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
+  cors: {
+    // FIX APPLIED HERE: Using process.env.FRONTEND_URL instead of config.FRONTEND_URL
+    origin: process.env.FRONTEND_URL,
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
 });
 
 // Note: WebSocket service disabled temporarily - requires migration to Supabase queries
@@ -68,60 +69,60 @@ const io = new SocketIOServer(server, {
 let wsService: any = null;
 
 try {
-  wsService = initializeWebSocket(io);
+  wsService = initializeWebSocket(io);
 } catch (e) {
-  console.warn('WebSocket service initialization skipped');
+  console.warn('WebSocket service initialization skipped');
 }
 
 // Startup
 async function start() {
-  try {
-    console.log('🚀 HealthPulse AI Backend Starting...');
-    console.log(`📊 Environment: ${config.NODE_ENV}`);
+  try {
+    console.log('🚀 HealthPulse AI Backend Starting...');
+    console.log(`📊 Environment: ${config.NODE_ENV}`);
 
-    // Initialize Supabase
-    try {
-      initializeSupabase();
-    } catch (supabaseError) {
-      console.warn('⚠️  Supabase initialization warning (this is OK during development)');
-    }
+    // Initialize Supabase
+    try {
+      initializeSupabase();
+    } catch (supabaseError) {
+      console.warn('⚠️  Supabase initialization warning (this is OK during development)');
+    }
 
-    // Initialize database (if Supabase is configured)
-    try {
-      await initializeDatabase();
-    } catch (dbError) {
-      console.warn('⚠️  Database initialization skipped (Supabase not configured)');
-    }
+    // Initialize database (if Supabase is configured)
+    try {
+      await initializeDatabase();
+    } catch (dbError) {
+      console.warn('⚠️  Database initialization skipped (Supabase not configured)');
+    }
 
-    // Start server
-    server.listen(config.PORT, () => {
-      console.log(`✓ Server running on http://localhost:${config.PORT}`);
-      console.log(`✓ WebSocket ready on ws://localhost:${config.PORT}`);
-      console.log(`✓ CORS enabled for ${config.FRONTEND_URL}`);
-      console.log('');
-      console.log('📝 To enable Supabase:');
-      console.log('   1. Create account at https://supabase.com');
-      console.log('   2. Create new project');
-      console.log('   3. Copy Project URL and anon key');
-      console.log('   4. Add to .env: SUPABASE_URL and SUPABASE_KEY');
-      console.log('   5. Restart server');
-    });
-  } catch (error) {
-    console.error('❌ Startup failed:', error);
-    process.exit(1);
-  }
+    // Start server
+    server.listen(config.PORT, () => {
+      console.log(`✓ Server running on http://localhost:${config.PORT}`);
+      console.log(`✓ WebSocket ready on ws://localhost:${config.PORT}`);
+      console.log(`✓ CORS enabled for ${config.FRONTEND_URL}`);
+      console.log('');
+      console.log('📝 To enable Supabase:');
+      console.log('   1. Create account at https://supabase.com');
+      console.log('   2. Create new project');
+      console.log('   3. Copy Project URL and anon key');
+      console.log('   4. Add to .env: SUPABASE_URL and SUPABASE_KEY');
+      console.log('   5. Restart server');
+    });
+  } catch (error) {
+    console.error('❌ Startup failed:', error);
+    process.exit(1);
+  }
 }
 
 start().catch(err => {
-  console.error('Unhandled startup error:');
-  if (err instanceof Error) {
-    console.error('Message:', err.message);
-    console.error('Stack:', err.stack);
-  } else {
-    console.error('Error:', JSON.stringify(err, null, 2));
-    console.error('Type:', typeof err);
-  }
-  process.exit(1);
+  console.error('Unhandled startup error:');
+  if (err instanceof Error) {
+    console.error('Message:', err.message);
+    console.error('Stack:', err.stack);
+  } else {
+    console.error('Error:', JSON.stringify(err, null, 2));
+    console.error('Type:', typeof err);
+  }
+  process.exit(1);
 });
 
 export { app, server, io, wsService };
