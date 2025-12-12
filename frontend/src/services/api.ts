@@ -39,13 +39,13 @@ class ApiClient {
     password: string;
     firstName: string;
     lastName: string;
-    dateOfBirth: string; // Changed to string to match common usage, but Date object also works if serialized
+    dateOfBirth: string | Date; // Changed to string to match common usage, but Date object also works if serialized
   }) {
     // Ensure date is string if passed as Date object
     const payload = {
         ...data,
-        dateOfBirth: (data.dateOfBirth as unknown) instanceof Date 
-          ? (data.dateOfBirth as Date).toISOString() 
+        dateOfBirth: data.dateOfBirth instanceof Date 
+          ? data.dateOfBirth.toISOString() 
           : data.dateOfBirth
     };
     const res = await this.client.post('/auth/register/patient', payload);
