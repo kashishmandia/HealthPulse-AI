@@ -28,41 +28,64 @@ const RegisterPage: React.FC = () => {
   };
 
   const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // ... password matching check ...
-
-    try {
-      let data;
-      if (role === 'PATIENT') {
-        data = await apiClient.registerPatient({
-          email: formData.email,
-          password: formData.password,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          dateOfBirth: formData.dateOfBirth
-        });
-      } else {
-        data = await apiClient.registerProvider({
-          email: formData.email,
-          password: formData.password,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          licenseNumber: formData.licenseNumber,
-          specialization: formData.specialization,
-          hospital: formData.hospital
-        });
-      }
-
-      // SAVE THE TOKEN HERE TOO
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Registration failed');
+    e.preventDefault();
+    // Add password matching check here if not already done
+    if (formData.password !== formData.confirmPassword) {
+        setError("Passwords do not match.");
+        return;
     }
-  };
 
+    try {
+      let data;
+      // Define a variable for the reformatted date
+      let formattedDateOfBirth = formData.dateOfBirth;
+
+      // Check if the date format is the problematic DD-MM-YYYY (like 24-04-2004)
+      // This is a common way to split and reverse the date string.
+      if (role === 'PATIENT' && formData.dateOfBirth.includes('-')) {
+          const parts = formData.dateOfBirth.split('-');
+          // Check if it looks like DD-MM-YYYY or MM-DD-YYYY and re-sort to YYYY-MM-DD
+          if (parts.length === 3 && parts[0].length < 3 && parts[2].length === 4) {
+              formattedDateOfBirth = `${parts[2]}-${parts[1]}-${parts[0]}`; // YYYY-MM-DD
+          }
+      }
+      // If the input type="date" correctly gives YYYY-MM-DD, this is fine, but
+      // this explicit logic safeguards against variations.
+
+
+      if (role === 'PATIENT') {
+        data = await apiClient.registerPatient({
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          // USE THE FORMATTED DATE HERE:
+          dateOfBirth: formattedDateOfBirth 
+        });
+      } else {
+        // ... (Provider logic remains the same)
+        data = await apiClient.registerProvider({
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          licenseNumber: formData.licenseNumber,
+          specialization: formData.specialization,
+          hospital: formData.hospital
+        });
+      }
+
+      // ... (Successful registration logic)
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Registration failed');
+    }
+  };
+
+  
   return (
     <BeamsBackground intensity="strong">
       {/* The "Window" - Glassmorphism Card */}
