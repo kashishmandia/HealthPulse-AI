@@ -20,9 +20,9 @@ export default function ProviderDashboard() {
     wsService.connect(user?.id || '', 'PROVIDER');
 
     // Listen for new alerts
-    wsService.on('new-alert', (alert) => {
-      setNewAlertsCount((prev) => prev + 1);
-      setNewAlertsCount((prev: number) => prev + 1);
+    wsService.on('new-alert', (_alert) => {
+  setAlerts([_alert, ...alerts]); // Use the new name here
+  setNewAlertsCount((prev: number) => prev + 1);
     });
 
     // Load initial data
