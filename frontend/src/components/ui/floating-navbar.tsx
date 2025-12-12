@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
@@ -18,18 +18,7 @@ interface NavBarProps {
   className?: string;
 }
 
-export function FloatingNavBar({ items, activeTab, onTabChange, className }: NavBarProps) {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+export function FloatingNavBar({ items, activeTab, onTabChange, className }: NavBarProps) 
 
   return (
     <div
