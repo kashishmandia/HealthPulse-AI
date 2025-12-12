@@ -1,5 +1,5 @@
 import React from 'react';
-import type { HealthScore } from '../../shared/types';
+import type { HealthScore } from '@shared/types';
 
 interface Props {
   score: HealthScore | null;
