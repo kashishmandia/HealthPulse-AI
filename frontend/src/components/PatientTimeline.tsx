@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { apiClient } from '../services/api';
+// Add this line at the top, along with the other imports:
+import type { TimelineEventType } from '@shared/types';
 
 interface Props {
   patientId: string;
@@ -66,7 +68,7 @@ export default function PatientTimeline({ patientId }: Props) {
         <p className="empty-state">No timeline events yet</p>
       ) : (
         <div className="timeline">
-          {timeline.map((event, idx) => (
+          {timeline.map((event: TimelineEventType, idx: number) => (
             <div key={event.id || idx} className="timeline-item">
               <div className="timeline-icon">{getEventIcon(event.type)}</div>
               <div className="timeline-content">
