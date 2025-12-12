@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, ReactNode } from 'react';
+import { useEffect, useRef, ReactNode } from 'react';
 
 interface GlowCardProps {
   children: ReactNode;
@@ -39,7 +39,6 @@ const GlowCard: React.FC<GlowCardProps> = ({
   noPadding = false
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const syncPointer = (e: PointerEvent) => {
