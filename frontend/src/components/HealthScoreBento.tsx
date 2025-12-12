@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { TrendingUp, TrendingDown, Minus, Activity, AlertTriangle, CheckCircle } from 'lucide-react';
 
 interface Props {
