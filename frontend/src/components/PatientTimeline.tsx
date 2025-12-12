@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { apiClient } from '../services/api';
 // Add this line at the top, along with the other imports:
-import type { TimelineEventType } from '@shared/types';
+import type { PatientTimelineEvent } from '@shared/types';
 
 interface Props {
   patientId: string;
