@@ -68,7 +68,7 @@ export default function PatientTimeline({ patientId }: Props) {
         <p className="empty-state">No timeline events yet</p>
       ) : (
         <div className="timeline">
-          {timeline.map((event: TimelineEventType, idx: number) => (
+          {timeline.map((event: PatientTimelineEvent, idx: number) => (
             <div key={event.id || idx} className="timeline-item">
               <div className="timeline-icon">{getEventIcon(event.type)}</div>
               <div className="timeline-content">
