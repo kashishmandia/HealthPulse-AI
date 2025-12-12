@@ -24,7 +24,7 @@ app.use(compression());
 // CORS configuration
 app.use(
   cors({
-    origin: config.FRONTEND_URL,
+    origin: config.FRONTEND_URL=https://healthpulsemodex.netlify.app,
     credentials: true,
   })
 );
