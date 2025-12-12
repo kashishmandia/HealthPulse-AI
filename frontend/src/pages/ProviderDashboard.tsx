@@ -21,8 +21,8 @@ export default function ProviderDashboard() {
 
     // Listen for new alerts
     wsService.on('new-alert', (alert) => {
-      setAlerts([alert, ...alerts]);
       setNewAlertsCount((prev) => prev + 1);
+      setNewAlertsCount((prev: number) => prev + 1);
     });
 
     // Load initial data
