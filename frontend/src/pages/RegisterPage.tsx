@@ -31,26 +31,31 @@ const RegisterPage: React.FC = () => {
     e.preventDefault();
     // Add password matching check here if not already done
     if (formData.password !== formData.confirmPassword) {
-        setError("Passwords do not match.");
-        return;
-    }
+        setError("Passwords do not match.");
+        return;
+    }
 
     try {
       let data;
-      // Define a variable for the reformatted date
-      let formattedDateOfBirth = formData.dateOfBirth;
+      
+      // --- ROBUST DATE FORMATTING FIX (REPLACES OLD LOGIC) ---
+      let isoDateString = formData.dateOfBirth;
 
-      // Check if the date format is the problematic DD-MM-YYYY (like 24-04-2004)
-      // This is a common way to split and reverse the date string.
-      if (role === 'PATIENT' && formData.dateOfBirth.includes('-')) {
-          const parts = formData.dateOfBirth.split('-');
-          // Check if it looks like DD-MM-YYYY or MM-DD-YYYY and re-sort to YYYY-MM-DD
-          if (parts.length === 3 && parts[0].length < 3 && parts[2].length === 4) {
-              formattedDateOfBirth = `${parts[2]}-${parts[1]}-${parts[0]}`; // YYYY-MM-DD
+      if (role === 'PATIENT' && formData.dateOfBirth) {
+          // 1. Create a Date object from the input string (e.g., "2004-04-24")
+          const dateObj = new Date(formData.dateOfBirth);
+          
+          // 2. Format to the mandatory YYYY-MM-DD string format for the API
+          // This safely handles locale and ensures only the date part is sent.
+          if (!isNaN(dateObj.getTime())) { // Check if date is valid
+              isoDateString = dateObj.toISOString().split('T')[0];
+          } else {
+              // Handle invalid date case if needed, though input type="date" usually prevents this
+              setError("Invalid Date of Birth.");
+              return;
           }
       }
-      // If the input type="date" correctly gives YYYY-MM-DD, this is fine, but
-      // this explicit logic safeguards against variations.
+      // ----------------------------------------------------
 
 
       if (role === 'PATIENT') {
@@ -59,8 +64,8 @@ const RegisterPage: React.FC = () => {
           password: formData.password,
           firstName: formData.firstName,
           lastName: formData.lastName,
-          // USE THE FORMATTED DATE HERE:
-          dateOfBirth: formattedDateOfBirth 
+          // USE THE NEW, GUARANTEED YYYY-MM-DD STRING
+          dateOfBirth: isoDateString 
         });
       } else {
         // ... (Provider logic remains the same)
@@ -84,7 +89,6 @@ const RegisterPage: React.FC = () => {
       setError(err.response?.data?.error || 'Registration failed');
     }
   };
-
   
   return (
     <BeamsBackground intensity="strong">
