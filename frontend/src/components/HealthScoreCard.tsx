@@ -1,4 +1,4 @@
-import React from 'react';
+
 import type { HealthScore } from '@shared/types';
 
 interface Props {
@@ -82,7 +82,7 @@ export default function HealthScoreCard({ score }: Props) {
         <div className="alerts-section">
           <h3>⚠️ Active Alerts</h3>
           <ul>
-            {score.autoAlerts.map((alert, idx) => (
+            {score.autoAlerts.map((alert: string, idx: number) => (
               <li key={idx}>{alert}</li>
             ))}
           </ul>
