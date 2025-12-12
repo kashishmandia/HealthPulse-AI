@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react"; // Removed 'React'
+
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
